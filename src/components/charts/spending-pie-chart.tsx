@@ -44,7 +44,7 @@ export function SpendingPieChart({
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-center h-[250px]">
+        <CardContent className="flex items-center justify-center h-[350px]">
            <div className="h-full w-full animate-pulse rounded-full bg-muted"></div>
         </CardContent>
         <CardFooter className="flex-col gap-2 text-sm">
@@ -64,13 +64,13 @@ export function SpendingPieChart({
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {data.length === 0 ? (
-          <div className="h-[250px] flex items-center justify-center">
+          <div className="h-[350px] flex items-center justify-center">
             <p className="text-muted-foreground">No data for this chart.</p>
           </div>
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px]"
+            className="mx-auto aspect-square max-h-[350px]"
           >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -97,8 +97,8 @@ export function SpendingPieChart({
                   nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
-                  innerRadius={60}
+                  outerRadius={90}
+                  innerRadius={65}
                   labelLine={false}
                   label={({ percent, name }) => {
                     if (name === "Remaining" && chartTotal > 0 && data.find(d => d.name === "Remaining")?.value === 0) return ""; // Hide label if Remaining is 0
@@ -112,7 +112,7 @@ export function SpendingPieChart({
                 </Pie>
                  <Legend 
                     content={({ payload }) => (
-                        <ul className="flex flex-wrap gap-x-4 gap-y-1 justify-center mt-2 text-xs">
+                        <ul className="flex flex-wrap gap-x-2 gap-y-1 justify-center mt-2 text-xs">
                         {payload?.map((entry, index) => {
                             const dataEntry = data.find(d => d.name === entry.value);
                             if (!dataEntry || dataEntry.value === 0 && dataEntry.name === "Remaining" && chartTotal > 0) return null; // Don't show legend for 0 value "Remaining" if there's income

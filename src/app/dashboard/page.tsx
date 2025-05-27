@@ -11,7 +11,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { SpendingPieChart } from '@/components/charts/spending-pie-chart';
-import { MonthlySummaryChart } from '@/components/charts/monthly-summary-chart';
 
 
 export default function DashboardPage() {
@@ -55,19 +54,6 @@ export default function DashboardPage() {
     });
   }
   
-  const monthlyExpensesChartData = [];
-  const today = new Date();
-  for (let i = 3; i >= 0; i--) { // Show current month and past 3 months
-    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    const monthSummary = getSummaryForMonth(monthYear);
-    monthlyExpensesChartData.push({
-      month: date.toLocaleString('default', { month: 'short' }),
-      expenses: monthSummary.totalExpenses,
-    });
-  }
-
-
   const noData = !isLoading && summary.totalIncome === 0 && expenses.length === 0 && budgets.length === 0;
 
   return (
@@ -114,14 +100,13 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1">
         <SpendingPieChart 
             data={pieChartData} 
             isLoading={isLoading}
             title="Income Allocation (Current Month)"
             description={summary.totalIncome > 0 ? "Breakdown of your income: expenses and remaining." : "Breakdown of your expenses."}
         />
-        <MonthlySummaryChart data={monthlyExpensesChartData} isLoading={isLoading} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
