@@ -11,6 +11,19 @@ export const SPENDING_CATEGORIES: Category[] = [
   "Shopping",
   "Education",
   "Miscellaneous",
+  "Car EMI",
+  "Flat EMI",
+  "SBI Credit Card Bill",
+  "SBI Rupay Credit Card Bill",
+  "Maintenance Charges",
+  "Medicines",
+  "Vegetables",
+  "Grocery",
+  "Petrol",
+  "Broadband Bill",
+  "Electricity Bill",
+  "School Fees",
+  "Other Expense",
 ];
 
 export const INCOME_CATEGORIES: Category[] = [
@@ -21,7 +34,7 @@ export const INCOME_CATEGORIES: Category[] = [
 export const ALL_CATEGORIES: Category[] = [...SPENDING_CATEGORIES, ...INCOME_CATEGORIES];
 
 export const MONTHS: string[] = [
-  "January", "February", "March", "April", "May", "June", 
+  "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 

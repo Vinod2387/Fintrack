@@ -1,5 +1,5 @@
 
-export type Category = 
+export type Category =
   | "Food & Dining"
   | "Housing"
   | "Transportation"
@@ -10,6 +10,19 @@ export type Category =
   | "Shopping"
   | "Education"
   | "Miscellaneous"
+  | "Car EMI"
+  | "Flat EMI"
+  | "SBI Credit Card Bill"
+  | "SBI Rupay Credit Card Bill"
+  | "Maintenance Charges"
+  | "Medicines"
+  | "Vegetables"
+  | "Grocery"
+  | "Petrol"
+  | "Broadband Bill"
+  | "Electricity Bill"
+  | "School Fees"
+  | "Other Expense"
   | "Salary" // Added for income categorization if needed
   | "Other Income";
 
