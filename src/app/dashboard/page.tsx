@@ -29,7 +29,7 @@ export default function DashboardPage() {
       existing.value += expense.amount;
     } else {
       // Cycle through 10 chart colors
-      acc.push({ name: expense.category, value: expense.amount, fill: `var(--chart-${(acc.length % 10) + 1})` });
+      acc.push({ name: expense.category, value: expense.amount, fill: `hsl(var(--chart-${(acc.length % 10) + 1}))` });
     }
     return acc;
   }, [] as Array<{ name: string; value: number; fill: string }>);
@@ -54,7 +54,7 @@ export default function DashboardPage() {
           height={300}
           className="w-full object-cover max-h-[200px] md:max-h-[300px]"
           data-ai-hint="finance abstract"
-          priority 
+          
         />
       </div>
 

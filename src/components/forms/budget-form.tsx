@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -107,7 +108,7 @@ export function BudgetForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select year" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {YEARS.map((year) => (
