@@ -15,7 +15,7 @@ export const ExpenseSchema = z.object({
   date: z.date({ required_error: 'Date is required' }),
   category: z.enum(spendingCategoriesTuple, { required_error: 'Category is required' }),
   amount: z.coerce.number().positive({ message: 'Amount must be positive' }),
-  description: z.string().min(1, { message: 'Description is required' }).max(100, { message: 'Description too long' }),
+  description: z.string().max(100, { message: 'Description cannot exceed 100 characters' }).optional(),
 });
 
 export const BudgetSchema = z.object({

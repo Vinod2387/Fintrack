@@ -27,11 +27,16 @@ body {
     --border: 208 20% 85%; /* Adjusted border for light theme */
     --input: 208 20% 88%;  /* Adjusted input for light theme */
     --ring: 207 66% 62%; /* Use primary color for ring */
-    --chart-1: 207 66% 62%; /* Primary */
-    --chart-2: 49 89% 60%;  /* Accent */
-    --chart-3: 173 58% 39%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 207 66% 62%; /* Primary Blue */
+    --chart-2: 49 89% 60%;  /* Accent Yellow */
+    --chart-3: 173 58% 39%; /* Green */
+    --chart-4: 43 74% 66%;  /* Orange */
+    --chart-5: 27 87% 67%;  /* Light Orange/Peach */
+    --chart-6: 300 60% 60%; /* Purple */
+    --chart-7: 25 80% 60%;  /* Darker Orange */
+    --chart-8: 200 70% 55%; /* Sky Blue */
+    --chart-9: 330 70% 65%; /* Pink */
+    --chart-10: 120 40% 50%;/* Darker Green */
     --radius: 0.5rem;
 
     /* Sidebar specific theme */
@@ -65,11 +70,16 @@ body {
     --border: 240 3.7% 25.9%;
     --input: 240 3.7% 20.9%;
     --ring: 207 66% 62%;
-    --chart-1: 207 66% 62%;
-    --chart-2: 49 89% 60%;
-    --chart-3: 173 58% 45%;
-    --chart-4: 43 74% 70%;
-    --chart-5: 27 87% 72%;
+    --chart-1: 207 66% 62%; /* Primary Blue */
+    --chart-2: 49 89% 60%;  /* Accent Yellow */
+    --chart-3: 173 58% 45%; /* Green */
+    --chart-4: 43 74% 70%;  /* Orange */
+    --chart-5: 27 87% 72%;  /* Light Orange/Peach */
+    --chart-6: 300 60% 65%; /* Purple */
+    --chart-7: 25 80% 65%;  /* Darker Orange */
+    --chart-8: 200 70% 60%; /* Sky Blue */
+    --chart-9: 330 70% 70%; /* Pink */
+    --chart-10: 120 40% 55%;/* Darker Green */
 
     --sidebar-background: 210 20% 15%; /* Slightly lighter dark for sidebar in dark mode */
     --sidebar-foreground: 0 0% 95%;

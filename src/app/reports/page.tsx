@@ -22,7 +22,7 @@ export default function ReportsPage() {
     if (existing) {
       existing.value += expense.amount;
     } else {
-      acc.push({ name: expense.category, value: expense.amount, fill: `var(--chart-${(acc.length % 5) + 1})` });
+      acc.push({ name: expense.category, value: expense.amount, fill: `var(--chart-${(acc.length % 10) + 1})` });
     }
     return acc;
   }, [] as Array<{ name: string; value: number; fill: string }>);
