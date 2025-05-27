@@ -3,11 +3,11 @@ export type Category =
   | "Food & Dining"
   | "Housing"
   | "Transportation"
-  | "Utilities"
-  | "Healthcare"
-  | "Entertainment"
-  | "Personal Care"
-  | "Shopping"
+  // | "Utilities" // Removed
+  // | "Healthcare" // Removed
+  // | "Entertainment" // Removed
+  // | "Personal Care" // Removed
+  // | "Shopping" // Removed
   | "Education"
   | "Miscellaneous"
   | "Car EMI"
@@ -23,7 +23,9 @@ export type Category =
   | "Electricity Bill"
   | "School Fees"
   | "Other Expense"
-  | "Salary" // Added for income categorization if needed
+  | "Mobile Recharge" // Added
+  | "Cylinder" // Added
+  | "Salary" 
   | "Other Income";
 
 export interface SalaryEntry {

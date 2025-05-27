@@ -4,11 +4,11 @@ export const SPENDING_CATEGORIES: Category[] = [
   "Food & Dining",
   "Housing",
   "Transportation",
-  "Utilities",
-  "Healthcare",
-  "Entertainment",
-  "Personal Care",
-  "Shopping",
+  // "Utilities", // Removed
+  // "Healthcare", // Removed
+  // "Entertainment", // Removed
+  // "Personal Care", // Removed
+  // "Shopping", // Removed
   "Education",
   "Miscellaneous",
   "Car EMI",
@@ -24,6 +24,8 @@ export const SPENDING_CATEGORIES: Category[] = [
   "Electricity Bill",
   "School Fees",
   "Other Expense",
+  "Mobile Recharge", // Added
+  "Cylinder", // Added
 ];
 
 export const INCOME_CATEGORIES: Category[] = [
