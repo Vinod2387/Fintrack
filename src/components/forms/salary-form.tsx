@@ -64,7 +64,7 @@ export function SalaryForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select month" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {MONTHS.map((month) => (
