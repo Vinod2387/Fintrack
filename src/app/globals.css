@@ -25,6 +25,8 @@ body {
     --accent-foreground: 45 50% 20%; /* Dark color for text on gold/yellow */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+    --success: 120 60% 90%; /* Light Green Background (if needed for cards) */
+    --success-foreground: 120 50% 30%; /* Dark Green Text */
     --border: 270 30% 85%; /* Purple-tinted border */
     --input: 270 30% 90%;  /* Light purple input background */
     --ring: 270 65% 55%; /* Use primary color for ring */
@@ -47,7 +49,7 @@ body {
     --sidebar-foreground: 270 30% 92%; /* Light lavender */
     --sidebar-primary: 270 70% 70%; /* Brighter purple for active items */
     --sidebar-primary-foreground: 270 20% 98%;
-    --sidebar-accent: 270 35% 35%; /* Slightly lighter than bg for hover */
+    --sidebar-accent: 270 30% 45%; /* Lighter purple for hover, more distinct */
     --sidebar-accent-foreground: 270 30% 95%;
     --sidebar-border: 270 35% 35%;
     --sidebar-ring: 270 70% 70%;
@@ -70,6 +72,8 @@ body {
     --accent-foreground: 45 50% 15%; /* Dark color for text on gold/yellow in dark mode */
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
+    --success: 120 25% 20%; /* Dark Green Background for dark mode (if needed for cards) */
+    --success-foreground: 120 60% 70%; /* Lighter Green Text for dark mode */
     --border: 270 15% 35%;
     --input: 270 15% 28%;
     --ring: 270 70% 65%;
@@ -91,7 +95,7 @@ body {
     --sidebar-foreground: 270 30% 92%;
     --sidebar-primary: 270 70% 70%; /* Match primary for consistency */
     --sidebar-primary-foreground: 270 20% 98%;
-    --sidebar-accent: 270 20% 28%;
+    --sidebar-accent: 270 25% 38%; /* Lighter hover for dark sidebar */
     --sidebar-accent-foreground: 270 30% 95%;
     --sidebar-border: 270 20% 28%;
     --sidebar-ring: 270 70% 70%;

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -45,7 +46,7 @@ export function SidebarNavItems() {
               asChild
               isActive={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
               tooltip={item.tooltip}
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground"
+              className="text-sidebar-foreground transition-colors duration-150 ease-in-out hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:font-medium"
             >
               <a>
                 <item.icon className="w-5 h-5" />

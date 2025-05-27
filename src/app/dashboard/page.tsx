@@ -71,27 +71,30 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Image removed from here */}
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <OverviewCard
           title="Total Income (Current Month)"
           value={summary.totalIncome}
           icon={DollarSign}
           isLoading={isLoading}
+          iconClassName="text-[hsl(var(--success-foreground))]"
+          valueClassName="text-[hsl(var(--success-foreground))]"
         />
         <OverviewCard
           title="Total Expenses (Current Month)"
           value={summary.totalExpenses}
           icon={TrendingDown}
           isLoading={isLoading}
+          iconClassName="text-accent"
+          valueClassName="text-accent"
         />
         <OverviewCard
           title="Net Balance (Current Month)"
-          value={summary.remainingBalance} // This is totalIncome - totalExpenses
+          value={summary.remainingBalance} 
           icon={Coins}
-          iconClassName={summary.remainingBalance >=0 ? "" : "text-destructive"} 
           isLoading={isLoading}
+          iconClassName={summary.remainingBalance >=0 ? "text-[hsl(var(--success-foreground))]" : "text-destructive"} 
+          valueClassName={summary.remainingBalance >=0 ? "text-[hsl(var(--success-foreground))]" : "text-destructive"}
         />
       </div>
 

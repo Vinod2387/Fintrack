@@ -10,10 +10,11 @@ interface OverviewCardProps {
   icon: LucideIcon;
   className?: string;
   iconClassName?: string;
+  valueClassName?: string; // Added prop for value styling
   isLoading?: boolean;
 }
 
-export function OverviewCard({ title, value, icon: Icon, className, iconClassName, isLoading = false }: OverviewCardProps) {
+export function OverviewCard({ title, value, icon: Icon, className, iconClassName, valueClassName, isLoading = false }: OverviewCardProps) {
   return (
     <Card className={cn("shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -26,7 +27,7 @@ export function OverviewCard({ title, value, icon: Icon, className, iconClassNam
         {isLoading ? (
            <div className="h-8 w-3/4 animate-pulse rounded-md bg-muted"></div>
         ) : (
-          <div className="text-2xl font-bold text-foreground">
+          <div className={cn("text-2xl font-bold text-foreground", valueClassName)}>
             {typeof value === 'number' ? formatCurrency(value) : value}
           </div>
         )}
