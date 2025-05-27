@@ -39,6 +39,7 @@ body {
     --chart-8: 30 85% 65%;  /* Orange */
     --chart-9: 270 40% 40%; /* Darker Muted Purple */
     --chart-10: 60 70% 45%; /* Olive/Dark Yellow */
+    --chart-green: 130 60% 45%; /* Distinct Green for 'Remaining' slice */
     --radius: 0.5rem;
 
     /* Sidebar specific theme (Light mode context, dark sidebar) */
@@ -83,6 +84,7 @@ body {
     --chart-8: 30 90% 70%;  /* Orange (dark mode adjusted) */
     --chart-9: 270 45% 45%; /* Darker Muted Purple (dark mode adjusted) */
     --chart-10: 60 75% 50%;/* Olive/Dark Yellow (dark mode adjusted) */
+    --chart-green: 130 65% 50%; /* Distinct Green for 'Remaining' slice (dark mode adjusted) */
 
     /* Sidebar specific theme (Dark mode context, even darker sidebar) */
     --sidebar-background: 270 20% 18%; /* Even darker purple */

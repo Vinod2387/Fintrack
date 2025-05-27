@@ -16,30 +16,57 @@ import { MonthlySummaryChart } from '@/components/charts/monthly-summary-chart';
 
 
 export default function DashboardPage() {
-  const { getSummaryForMonth, getExpensesForMonth, getBudgetsForMonth, isLoading } = useFinancialData();
+  const { getSummaryForMonth, getExpensesForMonth, getBudgetsForMonth, isLoading, salaries } = useFinancialData();
   const currentMonthYear = getCurrentMonthYear();
   
   const summary = getSummaryForMonth(currentMonthYear);
   const expenses = getExpensesForMonth(currentMonthYear);
   const budgets = getBudgetsForMonth(currentMonthYear);
 
-  const spendingDataForChart = expenses.reduce((acc, expense) => {
-    const existing = acc.find(item => item.name === expense.category);
-    if (existing) {
-      existing.value += expense.amount;
-    } else {
-      // Cycle through 10 chart colors
-      acc.push({ name: expense.category, value: expense.amount, fill: `hsl(var(--chart-${(acc.length % 10) + 1}))` });
-    }
-    return acc;
-  }, [] as Array<{ name: string; value: number; fill: string }>);
+  const pieChartData: Array<{ name: string; value: number; fill: string }> = [];
+  let cumulativeExpenses = 0;
+  const MAX_CHART_COLORS = 10; 
 
-  const monthlyChartData = [ // Example data, should be dynamic based on past months
-    { month: "Jan", income: 4000, expenses: 2200 },
-    { month: "Feb", income: 4100, expenses: 2500 },
-    { month: "Mar", income: 4050, expenses: 2300 },
-    { month: "Apr", income: summary.totalIncome, expenses: summary.totalExpenses }, // Current month
-  ];
+  const aggregatedExpenses: Record<string, number> = expenses.reduce((acc, expense) => {
+    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    return acc;
+  }, {} as Record<string, number>);
+
+  let colorIndex = 0;
+  for (const category in aggregatedExpenses) {
+    const amount = aggregatedExpenses[category];
+    if (amount > 0) {
+      pieChartData.push({
+        name: category,
+        value: amount,
+        fill: `hsl(var(--chart-${(colorIndex % MAX_CHART_COLORS) + 1}))`,
+      });
+      cumulativeExpenses += amount;
+      colorIndex++;
+    }
+  }
+
+  const remainingAmountFromIncome = summary.totalIncome - cumulativeExpenses;
+
+  if (summary.totalIncome > 0) { // Only consider "Remaining" if there's income
+    pieChartData.push({
+      name: 'Remaining',
+      value: Math.max(0, remainingAmountFromIncome), // Value can't be negative for pie slice
+      fill: 'hsl(var(--chart-green))', 
+    });
+  }
+  
+  const monthlyExpensesChartData = [];
+  const today = new Date();
+  for (let i = 3; i >= 0; i--) { // Show current month and past 3 months
+    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const monthSummary = getSummaryForMonth(monthYear);
+    monthlyExpensesChartData.push({
+      month: date.toLocaleString('default', { month: 'short' }),
+      expenses: monthSummary.totalExpenses,
+    });
+  }
 
 
   const noData = !isLoading && summary.totalIncome === 0 && expenses.length === 0 && budgets.length === 0;
@@ -54,7 +81,6 @@ export default function DashboardPage() {
           height={300}
           className="w-full object-cover max-h-[200px] md:max-h-[300px]"
           data-ai-hint="finance abstract"
-          
         />
       </div>
 
@@ -72,10 +98,10 @@ export default function DashboardPage() {
           isLoading={isLoading}
         />
         <OverviewCard
-          title="Remaining Balance (Current Month)"
-          value={summary.remainingBalance}
+          title="Net Balance (Current Month)"
+          value={summary.remainingBalance} // This is totalIncome - totalExpenses
           icon={Coins}
-          iconClassName={summary.remainingBalance >=0 ? "" : "text-destructive"} // Rely on theme for non-destructive
+          iconClassName={summary.remainingBalance >=0 ? "" : "text-destructive"} 
           isLoading={isLoading}
         />
       </div>
@@ -99,8 +125,13 @@ export default function DashboardPage() {
       )}
 
       <div className="grid gap-6 md:grid-cols-2">
-        <SpendingPieChart data={spendingDataForChart} isLoading={isLoading} />
-        <MonthlySummaryChart data={monthlyChartData} isLoading={isLoading} />
+        <SpendingPieChart 
+            data={pieChartData} 
+            isLoading={isLoading}
+            title="Income Allocation (Current Month)"
+            description={summary.totalIncome > 0 ? "Breakdown of your income: expenses and remaining." : "Breakdown of your expenses."}
+        />
+        <MonthlySummaryChart data={monthlyExpensesChartData} isLoading={isLoading} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

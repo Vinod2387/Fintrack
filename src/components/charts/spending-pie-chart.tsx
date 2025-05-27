@@ -1,3 +1,4 @@
+
 'use client';
 
 import { TrendingUp } from 'lucide-react';
@@ -19,9 +20,16 @@ import { formatCurrency } from '@/lib/utils';
 interface SpendingPieChartProps {
   data: Array<{ name: string; value: number; fill: string }>;
   isLoading?: boolean;
+  title?: string;
+  description?: string;
 }
 
-export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartProps) {
+export function SpendingPieChart({ 
+  data, 
+  isLoading = false,
+  title = "Spending by Category",
+  description = "Current month's expense distribution."
+}: SpendingPieChartProps) {
 
   const chartConfig = data.reduce((acc, item) => {
     acc[item.name] = { label: item.name, color: item.fill };
@@ -33,8 +41,8 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
     return (
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Spending by Category</CardTitle>
-          <CardDescription>Current month's expense distribution.</CardDescription>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[250px]">
            <div className="h-full w-full animate-pulse rounded-full bg-muted"></div>
@@ -46,18 +54,18 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
     );
   }
   
-  const totalSpent = data.reduce((acc, curr) => acc + curr.value, 0);
+  const chartTotal = data.reduce((acc, curr) => acc + curr.value, 0);
 
   return (
     <Card className="flex flex-col shadow-lg">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Spending by Category</CardTitle>
-        <CardDescription>Current month's expense distribution.</CardDescription>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {data.length === 0 ? (
           <div className="h-[250px] flex items-center justify-center">
-            <p className="text-muted-foreground">No spending data for this month.</p>
+            <p className="text-muted-foreground">No data for this chart.</p>
           </div>
         ) : (
           <ChartContainer
@@ -92,7 +100,11 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
                   outerRadius={80}
                   innerRadius={60}
                   labelLine={false}
-                  label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                  label={({ percent, name }) => {
+                    if (name === "Remaining" && chartTotal > 0 && data.find(d => d.name === "Remaining")?.value === 0) return ""; // Hide label if Remaining is 0
+                    if (chartTotal === 0) return ""; // Hide all labels if total is 0
+                    return `${(percent * 100).toFixed(0)}%`;
+                  }}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -101,12 +113,18 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
                  <Legend 
                     content={({ payload }) => (
                         <ul className="flex flex-wrap gap-x-4 gap-y-1 justify-center mt-2 text-xs">
-                        {payload?.map((entry, index) => (
+                        {payload?.map((entry, index) => {
+                            const dataEntry = data.find(d => d.name === entry.value);
+                            if (!dataEntry || dataEntry.value === 0 && dataEntry.name === "Remaining" && chartTotal > 0) return null; // Don't show legend for 0 value "Remaining" if there's income
+                            if (dataEntry.value === 0 && chartTotal === 0) return null; // Don't show legend if value is 0 and chart total is 0
+
+                            return (
                             <li key={`item-${index}`} className="flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }}></span>
-                            {entry.value} ({(data.find(d => d.name === entry.value)?.value || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0})})
+                            {entry.value} ({Number(dataEntry.value).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0})})
                             </li>
-                        ))}
+                        );
+                        })}
                         </ul>
                     )}
                 />
@@ -117,10 +135,10 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
       </CardContent>
        <CardFooter className="flex-col gap-2 text-sm mt-auto">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Total spent this month: {formatCurrency(totalSpent)}
+          {chartTotal > 0 ? `Chart Total: ${formatCurrency(chartTotal)}` : "No data to display"}
         </div>
         <div className="leading-none text-muted-foreground">
-          Shows breakdown of expenses by category.
+          Shows breakdown of income allocation or expenses.
         </div>
       </CardFooter>
     </Card>

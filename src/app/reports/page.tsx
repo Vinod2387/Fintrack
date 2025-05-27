@@ -1,9 +1,10 @@
+
 'use client';
 
 import { SpendingPieChart } from '@/components/charts/spending-pie-chart';
 import { MonthlySummaryChart } from '@/components/charts/monthly-summary-chart';
 import { useFinancialData } from '@/contexts/financial-data-context';
-import { getCurrentMonthYear, MONTHS, SPENDING_CATEGORIES } from '@/lib/constants'; // Added SPENDING_CATEGORIES
+import { getCurrentMonthYear, MONTHS, SPENDING_CATEGORIES } from '@/lib/constants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,25 +18,47 @@ export default function ReportsPage() {
   const expenses = getExpensesForMonth(currentMonthYear);
   const summary = getSummaryForMonth(currentMonthYear);
 
-  const spendingDataForPieChart = expenses.reduce((acc, expense) => {
-    const existing = acc.find(item => item.name === expense.category);
-    if (existing) {
-      existing.value += expense.amount;
-    } else {
-      acc.push({ name: expense.category, value: expense.amount, fill: `hsl(var(--chart-${(acc.length % 10) + 1}))` });
-    }
-    return acc;
-  }, [] as Array<{ name: string; value: number; fill: string }>);
+  const pieChartData: Array<{ name: string; value: number; fill: string }> = [];
+  let cumulativeExpenses = 0;
+  const MAX_CHART_COLORS = 10;
 
-  const monthlySummaryData: Array<{ month: string; income: number; expenses: number }> = [];
+  const aggregatedExpenses: Record<string, number> = expenses.reduce((acc, expense) => {
+    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  let colorIndex = 0;
+  for (const category in aggregatedExpenses) {
+    const amount = aggregatedExpenses[category];
+    if (amount > 0) {
+      pieChartData.push({
+        name: category,
+        value: amount,
+        fill: `hsl(var(--chart-${(colorIndex % MAX_CHART_COLORS) + 1}))`,
+      });
+      cumulativeExpenses += amount;
+      colorIndex++;
+    }
+  }
+
+  const remainingAmountFromIncome = summary.totalIncome - cumulativeExpenses;
+
+  if (summary.totalIncome > 0) {
+    pieChartData.push({
+      name: 'Remaining',
+      value: Math.max(0, remainingAmountFromIncome),
+      fill: 'hsl(var(--chart-green))',
+    });
+  }
+
+  const monthlyExpensesChartData: Array<{ month: string; expenses: number }> = [];
   const today = new Date();
-  for (let i = 5; i >= 0; i--) {
+  for (let i = 5; i >= 0; i--) { // Past 6 months including current
     const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
     const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const monthSummary = getSummaryForMonth(monthYear);
-    monthlySummaryData.push({
+    monthlyExpensesChartData.push({
       month: MONTHS[date.getMonth()].substring(0,3),
-      income: monthSummary.totalIncome,
       expenses: monthSummary.totalExpenses,
     });
   }
@@ -53,8 +76,13 @@ export default function ReportsPage() {
       <h1 className="text-3xl font-bold text-foreground">Financial Reports</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SpendingPieChart data={spendingDataForPieChart} isLoading={isLoading} />
-        <MonthlySummaryChart data={monthlySummaryData} isLoading={isLoading}/>
+        <SpendingPieChart 
+            data={pieChartData} 
+            isLoading={isLoading}
+            title="Income Allocation (Current Month)"
+            description={summary.totalIncome > 0 ? "Breakdown of your income: expenses and remaining." : "Breakdown of your expenses."}
+        />
+        <MonthlySummaryChart data={monthlyExpensesChartData} isLoading={isLoading}/>
       </div>
 
       <Card className="shadow-lg">
