@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -74,12 +75,12 @@ export function MonthlySummaryChart({ data, isLoading = false }: MonthlySummaryC
         ) : (
         <ChartContainer config={chartConfig} className="h-[250px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} margin={{ top: 5, right: 20, left: -5, bottom: 5 }}> {/* Adjusted left margin */}
+            <BarChart data={data} margin={{ top: 5, right: 20, left: -5, bottom: 5 }} barCategoryGap="20%"> {/* Adjusted barCategoryGap for broader bars */}
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
               <YAxis tickLine={false} axisLine={false} tickMargin={8} width={80} tickFormatter={yAxisFormatter} />
               <Tooltip
-                cursor={false}
+                cursor={{ fill: 'hsl(var(--muted))', opacity: 0.3 }} // Added cursor style
                 content={<ChartTooltipContent 
                   indicator="dashed" 
                   formatter={(value, name) => {
@@ -97,8 +98,8 @@ export function MonthlySummaryChart({ data, isLoading = false }: MonthlySummaryC
                 />}
               />
               <Legend />
-              <Bar dataKey="income" fill="var(--color-income)" radius={4} />
-              <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
+              <Bar dataKey="income" fill="var(--color-income)" radius={[4, 4, 0, 0]} barSize={35} /> {/* Adjusted barSize and radius */}
+              <Bar dataKey="expenses" fill="var(--color-expenses)" radius={[4, 4, 0, 0]} barSize={35} /> {/* Adjusted barSize and radius */}
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>

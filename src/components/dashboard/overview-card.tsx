@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -19,7 +20,7 @@ export function OverviewCard({ title, value, icon: Icon, className, iconClassNam
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        <Icon className={cn("h-5 w-5 text-muted-foreground", iconClassName)} />
+        <Icon className={cn("h-5 w-5 text-primary", iconClassName)} /> 
       </CardHeader>
       <CardContent>
         {isLoading ? (
