@@ -89,7 +89,7 @@ export function SalaryForm() {
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select year" />
-                          </Trigger>
+                          </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {YEARS.map((year) => (
