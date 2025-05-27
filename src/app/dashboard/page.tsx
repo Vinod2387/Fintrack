@@ -6,11 +6,12 @@ import { OverviewCard } from '@/components/dashboard/overview-card';
 import { RecentTransactionsTable } from '@/components/dashboard/recent-transactions-table';
 import { BudgetStatusList } from '@/components/dashboard/budget-status-list';
 import { useFinancialData } from '@/contexts/financial-data-context';
-import { getCurrentMonthYear } from '@/lib/constants';
+import { getCurrentMonthYear, MONTHS } from '@/lib/constants';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { SpendingPieChart } from '@/components/charts/spending-pie-chart';
+import { MonthlySummaryChart } from '@/components/charts/monthly-summary-chart';
 
 
 export default function DashboardPage() {
@@ -56,6 +57,18 @@ export default function DashboardPage() {
   
   const noData = !isLoading && summary.totalIncome === 0 && expenses.length === 0 && budgets.length === 0;
 
+  const monthlyExpensesChartData: Array<{ month: string; expenses: number }> = [];
+  const today = new Date();
+  for (let i = 5; i >= 0; i--) { // Past 6 months including current
+    const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const monthSummary = getSummaryForMonth(monthYear);
+    monthlyExpensesChartData.push({
+      month: MONTHS[date.getMonth()].substring(0,3),
+      expenses: monthSummary.totalExpenses,
+    });
+  }
+
   return (
     <div className="flex flex-col gap-6">
       {/* Image removed from here */}
@@ -100,13 +113,14 @@ export default function DashboardPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 grid-cols-1">
+      <div className="grid gap-6 md:grid-cols-2">
         <SpendingPieChart 
             data={pieChartData} 
             isLoading={isLoading}
             title="Income Allocation (Current Month)"
             description={summary.totalIncome > 0 ? "Breakdown of your income: expenses and remaining." : "Breakdown of your expenses."}
         />
+         <MonthlySummaryChart data={monthlyExpensesChartData} isLoading={isLoading}/>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
