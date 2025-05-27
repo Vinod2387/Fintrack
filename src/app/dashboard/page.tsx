@@ -1,7 +1,6 @@
 
 'use client';
 
-import Image from 'next/image';
 import { DollarSign, TrendingDown, Coins, AlertTriangle } from 'lucide-react';
 import { OverviewCard } from '@/components/dashboard/overview-card';
 import { RecentTransactionsTable } from '@/components/dashboard/recent-transactions-table';
@@ -73,16 +72,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="mb-6 shadow-lg rounded-lg overflow-hidden">
-        <Image
-          src="https://placehold.co/1200x300.png"
-          alt="Financial Dashboard Banner"
-          width={1200}
-          height={300}
-          className="w-full object-cover max-h-[200px] md:max-h-[300px]"
-          data-ai-hint="finance abstract"
-        />
-      </div>
+      {/* Image removed from here */}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <OverviewCard

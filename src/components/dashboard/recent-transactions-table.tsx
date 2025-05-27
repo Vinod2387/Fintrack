@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Expense } from '@/types';
@@ -50,16 +51,14 @@ export function RecentTransactionsTable({ transactions, title = "Recent Expenses
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Category</TableHead>
-                  <TableHead>Description</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sortedTransactions.map((transaction) => (
                   <TableRow key={transaction.id}>
-                    <TableCell>{new Date(transaction.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(transaction.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' })}</TableCell>
                     <TableCell><Badge variant="secondary">{transaction.category}</Badge></TableCell>
-                    <TableCell className="truncate max-w-xs">{transaction.description}</TableCell>
                     <TableCell className="text-right font-medium">
                       -{formatCurrency(transaction.amount).replace(/^₹/, '')}
                     </TableCell>
