@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatCurrency } from '@/lib/utils';
 
 interface RecentTransactionsTableProps {
   transactions: Expense[];
@@ -60,7 +61,7 @@ export function RecentTransactionsTable({ transactions, title = "Recent Expenses
                     <TableCell><Badge variant="secondary">{transaction.category}</Badge></TableCell>
                     <TableCell className="truncate max-w-xs">{transaction.description}</TableCell>
                     <TableCell className="text-right font-medium">
-                      -${transaction.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      -{formatCurrency(transaction.amount).replace(/^₹/, '')}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -19,6 +19,7 @@ import { ExpenseSchema } from '@/lib/schemas';
 import { SPENDING_CATEGORIES } from '@/lib/constants';
 import { useToast } from "@/hooks/use-toast";
 import type { Category } from '@/types';
+import { formatCurrency } from '@/lib/utils';
 
 type ExpenseFormValues = z.infer<typeof ExpenseSchema>;
 
@@ -39,11 +40,11 @@ export function ExpenseForm() {
   function onSubmit(values: ExpenseFormValues) {
     addExpense({
         ...values,
-        date: values.date.toISOString() // Convert date to ISO string
+        date: values.date.toISOString() 
     });
     toast({
       title: "Expense Added",
-      description: `${values.category} expense of $${values.amount.toFixed(2)} added.`,
+      description: `${values.category} expense of ${formatCurrency(values.amount)} added.`,
     });
     form.reset();
   }

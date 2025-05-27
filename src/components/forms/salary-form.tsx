@@ -1,5 +1,7 @@
+
 'use client';
 
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,6 +15,7 @@ import { SalarySchema } from '@/lib/schemas';
 import { MONTHS, YEARS, CURRENT_YEAR } from '@/lib/constants';
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 type SalaryFormValues = z.infer<typeof SalarySchema>;
 
@@ -33,11 +36,11 @@ export function SalaryForm() {
     addSalary(values);
     toast({
       title: "Salary Added",
-      description: `Salary of $${values.amount.toFixed(2)} for ${values.month} ${values.year} has been added.`,
+      description: `Salary of ${formatCurrency(values.amount)} for ${values.month} ${values.year} has been added.`,
     });
-    form.reset({ 
-      ...values, // Keep month and year for convenience
-      amount: undefined 
+    form.reset({
+      ...values,
+      amount: undefined
     });
   }
 
@@ -85,7 +88,7 @@ export function SalaryForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {YEARS.map((year) => (

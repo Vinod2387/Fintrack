@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,6 +15,7 @@ import { SPENDING_CATEGORIES, MONTHS, YEARS, CURRENT_YEAR } from '@/lib/constant
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from 'lucide-react';
 import type { Category } from '@/types';
+import { formatCurrency } from '@/lib/utils';
 
 type BudgetFormValues = z.infer<typeof BudgetSchema>;
 
@@ -35,7 +37,6 @@ export function BudgetForm() {
   const watchYear = form.watch("year");
   const watchCategory = form.watch("category");
 
-  // Update amount placeholder if budget already exists
   React.useEffect(() => {
     if (watchMonth && watchYear && watchCategory) {
       const monthIndex = MONTHS.indexOf(watchMonth) + 1;
@@ -44,7 +45,7 @@ export function BudgetForm() {
       if (existingBudget) {
         form.setValue("amount", existingBudget.amount);
       } else {
-        form.setValue("amount", undefined); // Clear if no existing budget or category changes
+        form.setValue("amount", undefined); 
       }
     }
   }, [watchMonth, watchYear, watchCategory, budgets, form]);
@@ -54,11 +55,10 @@ export function BudgetForm() {
     addBudget(values);
      toast({
       title: "Budget Set/Updated",
-      description: `Budget for ${values.category} in ${values.month} ${values.year} set to $${values.amount.toFixed(2)}.`,
+      description: `Budget for ${values.category} in ${values.month} ${values.year} set to ${formatCurrency(values.amount)}.`,
     });
-    // Optionally reset only amount or keep values for quick successive entries
     form.reset({ 
-      ...values, // Keep month, year, category
+      ...values, 
       amount: undefined 
     });
   }
@@ -107,7 +107,7 @@ export function BudgetForm() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select year" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {YEARS.map((year) => (

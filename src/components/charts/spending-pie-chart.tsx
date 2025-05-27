@@ -14,6 +14,7 @@ import {
   ChartContainer,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import { formatCurrency } from '@/lib/utils';
 
 interface SpendingPieChartProps {
   data: Array<{ name: string; value: number; fill: string }>;
@@ -67,7 +68,20 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
               <PieChart>
                 <Tooltip
                   cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
+                  content={<ChartTooltipContent 
+                    hideLabel 
+                    formatter={(value, name, props) => {
+                      return (
+                        <div className="flex w-full items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                             <span className="w-2.5 h-2.5 shrink-0 rounded-full" style={{ backgroundColor: props.payload.fill }}/>
+                            {name}
+                          </div>
+                          <span>{Number(value).toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</span>
+                        </div>
+                      );
+                    }}
+                  />}
                 />
                 <Pie
                   data={data}
@@ -90,7 +104,7 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
                         {payload?.map((entry, index) => (
                             <li key={`item-${index}`} className="flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: entry.color }}></span>
-                            {entry.value} (${data.find(d => d.name === entry.value)?.value.toFixed(2)})
+                            {entry.value} ({(data.find(d => d.name === entry.value)?.value || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0})})
                             </li>
                         ))}
                         </ul>
@@ -103,7 +117,7 @@ export function SpendingPieChart({ data, isLoading = false }: SpendingPieChartPr
       </CardContent>
        <CardFooter className="flex-col gap-2 text-sm mt-auto">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Total spent this month: ${totalSpent.toFixed(2)}
+          Total spent this month: {formatCurrency(totalSpent)}
         </div>
         <div className="leading-none text-muted-foreground">
           Shows breakdown of expenses by category.

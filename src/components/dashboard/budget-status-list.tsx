@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { SPENDING_CATEGORIES } from '@/lib/constants';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatCurrency } from '@/lib/utils';
 
 interface BudgetStatusListProps {
   budgets: Budget[];
@@ -64,7 +65,7 @@ export function BudgetStatusList({ budgets, expenses, title = "Budget Status", m
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-foreground">{status.category}</span>
                     <span className={`text-xs font-semibold ${status.spent > status.amount ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      ${status.spent.toFixed(2)} / ${status.amount.toFixed(2)}
+                      {formatCurrency(status.spent)} / {formatCurrency(status.amount)}
                     </span>
                   </div>
                   <Progress value={status.progress} className={status.progress > 80 ? (status.progress > 100 ? 'bg-destructive/30 [&>div]:bg-destructive' : 'bg-accent/30 [&>div]:bg-accent') : 'bg-primary/30 [&>div]:bg-primary'} />

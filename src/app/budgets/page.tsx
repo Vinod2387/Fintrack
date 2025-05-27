@@ -9,18 +9,19 @@ import { getCurrentMonthYear, MONTHS } from '@/lib/constants';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatCurrency } from '@/lib/utils';
 
 export default function BudgetsPage() {
   const { budgets, isLoading, getExpensesForMonth } = useFinancialData();
   const [selectedMonthYear, setSelectedMonthYear] = useState(getCurrentMonthYear());
 
   const currentYear = new Date().getFullYear();
-  const monthYearOptions = Array.from({ length: 12 * 3 }, (_, i) => { // 3 years of options: last year, current year, next year
+  const monthYearOptions = Array.from({ length: 12 * 3 }, (_, i) => { 
     const date = new Date(currentYear -1, i % 12, 1);
     if (i >= 12 && i < 24) date.setFullYear(currentYear);
     if (i >= 24) date.setFullYear(currentYear + 1);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-  }).filter((value, index, self) => self.indexOf(value) === index) // unique
+  }).filter((value, index, self) => self.indexOf(value) === index) 
     .sort((a, b) => b.localeCompare(a));
 
 
@@ -83,10 +84,10 @@ export default function BudgetsPage() {
                     return (
                       <TableRow key={budget.id}>
                         <TableCell>{budget.category}</TableCell>
-                        <TableCell>${budget.amount.toFixed(2)}</TableCell>
-                        <TableCell>${spent.toFixed(2)}</TableCell>
+                        <TableCell>{formatCurrency(budget.amount)}</TableCell>
+                        <TableCell>{formatCurrency(spent)}</TableCell>
                         <TableCell className={remaining < 0 ? 'text-destructive' : 'text-green-600'}>
-                          ${remaining.toFixed(2)}
+                          {formatCurrency(remaining)}
                         </TableCell>
                         <TableCell>
                           {spent > budget.amount ? (

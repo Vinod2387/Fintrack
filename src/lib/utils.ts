@@ -6,9 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Helper to format currency, can be expanded
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: currency,
+    currency: 'INR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 }

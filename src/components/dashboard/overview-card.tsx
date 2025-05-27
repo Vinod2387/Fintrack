@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 
 interface OverviewCardProps {
   title: string;
@@ -25,7 +26,7 @@ export function OverviewCard({ title, value, icon: Icon, className, iconClassNam
            <div className="h-8 w-3/4 animate-pulse rounded-md bg-muted"></div>
         ) : (
           <div className="text-2xl font-bold text-foreground">
-            {typeof value === 'number' ? `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : value}
+            {typeof value === 'number' ? formatCurrency(value) : value}
           </div>
         )}
       </CardContent>

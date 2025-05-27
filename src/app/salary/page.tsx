@@ -5,6 +5,7 @@ import { useFinancialData } from '@/contexts/financial-data-context';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatCurrency } from '@/lib/utils';
 
 export default function SalaryPage() {
   const { salaries, isLoading } = useFinancialData();
@@ -53,7 +54,7 @@ export default function SalaryPage() {
                   {sortedSalaries.map((salary) => (
                     <TableRow key={salary.id}>
                       <TableCell>{getMonthName(salary.monthYear)}</TableCell>
-                      <TableCell>${salary.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</TableCell>
+                      <TableCell>{formatCurrency(salary.amount)}</TableCell>
                       <TableCell>{new Date(salary.dateAdded).toLocaleDateString()}</TableCell>
                     </TableRow>
                   ))}

@@ -3,11 +3,12 @@
 import { SpendingPieChart } from '@/components/charts/spending-pie-chart';
 import { MonthlySummaryChart } from '@/components/charts/monthly-summary-chart';
 import { useFinancialData } from '@/contexts/financial-data-context';
-import { getCurrentMonthYear, MONTHS } from '@/lib/constants';
+import { getCurrentMonthYear, MONTHS, SPENDING_CATEGORIES } from '@/lib/constants'; // Added SPENDING_CATEGORIES
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Expense } from '@/types';
+import { formatCurrency } from '@/lib/utils';
 
 export default function ReportsPage() {
   const { getExpensesForMonth, getSummaryForMonth, isLoading } = useFinancialData();
@@ -80,7 +81,7 @@ export default function ReportsPage() {
                   {categorySummary.map(item => (
                     <TableRow key={item.category}>
                       <TableCell className="font-medium">{item.category}</TableCell>
-                      <TableCell className="text-right">${item.totalSpent.toFixed(2)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(item.totalSpent)}</TableCell>
                       <TableCell className="text-right">{item.transactionCount}</TableCell>
                     </TableRow>
                   ))}
