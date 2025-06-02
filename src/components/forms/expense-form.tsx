@@ -1,6 +1,7 @@
 
 'use client';
 
+import React, { useEffect } from 'react'; // Added React and useEffect
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
@@ -31,25 +32,34 @@ export function ExpenseForm() {
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(ExpenseSchema),
     defaultValues: {
-      date: new Date(),
+      date: undefined, // Initialize date as undefined
       category: undefined,
-      amount: '', // Changed from undefined
+      amount: '',
       description: '',
     },
   });
 
+  useEffect(() => {
+    // Set the date to new Date() only on the client, after initial mount,
+    // if it hasn't been set by the user or a previous effect.
+    if (form.getValues('date') === undefined) {
+      form.setValue('date', new Date(), { shouldDirty: false, shouldValidate: false });
+    }
+  }, [form]); // form instance is stable, form.setValue is also stable
+
   function onSubmit(values: ExpenseFormValues) {
+    // ExpenseSchema ensures 'date' is a valid Date object here
     addExpense({
         ...values,
-        date: values.date.toISOString(),
-        amount: parseFloat(String(values.amount)) // Ensure amount is number before passing to context
+        date: values.date!.toISOString(), // Add non-null assertion as it's validated
+        amount: parseFloat(String(values.amount))
     });
     toast({
       title: "Expense Added",
       description: `${values.category} expense of ${formatCurrency(parseFloat(String(values.amount)))} added.`,
     });
-    form.reset({ // Reset with new defaults
-      date: new Date(),
+    form.reset({
+      date: new Date(), // This is fine here as onSubmit is a client-side event
       category: undefined,
       amount: '',
       description: '',
@@ -81,7 +91,7 @@ export function ExpenseForm() {
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          {field.value ? (
+                          {field.value instanceof Date && !isNaN(field.value.valueOf()) ? (
                             format(field.value, "PPP")
                           ) : (
                             <span>Pick a date</span>
