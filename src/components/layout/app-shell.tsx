@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { ReactNode } from 'react';
@@ -14,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { SidebarNavItems } from './sidebar-nav-items';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Landmark } from 'lucide-react'; // Using Landmark for FinTrack logo
+import { Landmark, PanelLeft } from 'lucide-react'; // Using Landmark for FinTrack logo, PanelLeft for trigger
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { open, setOpen, isMobile, openMobile, setOpenMobile } = useSidebar();
@@ -54,14 +55,17 @@ export function AppShell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset className="flex-1 flex flex-col bg-background">
         <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 lg:h-[60px] lg:px-6">
-            {!isMobile && (
-              <Button variant="ghost" size="icon" onClick={() => setOpen(!open)} className="md:hidden">
-                <SidebarTrigger />
-              </Button>
-            )}
+            {/* 
+              The desktop trigger block was removed as it was effectively hidden due to `!isMobile && className="md:hidden"`.
+              If a desktop header trigger is needed, <SidebarTrigger /> can be used directly here with appropriate desktop visibility classes.
+              Currently, sidebar toggling on desktop is often handled by SidebarRail or persistence.
+            */}
             {isMobile && (
-              <Button variant="ghost" size="icon" onClick={() => setOpenMobile(true)} className="md:hidden">
-                <SidebarTrigger />
+              // Use Button directly with PanelLeft icon to avoid nesting and control onClick precisely for opening.
+              // The mobile sidebar (sheet) has its own close button.
+              <Button variant="ghost" size="icon" onClick={() => setOpenMobile(true)} className="h-7 w-7 md:hidden">
+                <PanelLeft />
+                <span className="sr-only">Open sidebar</span>
               </Button>
             )}
            <div className="flex-1">
