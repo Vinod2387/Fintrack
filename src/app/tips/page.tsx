@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, Lightbulb, Wand2 } from 'lucide-react';
+import { Loader2, Lightbulb, Wand2, AlertTriangle } from 'lucide-react';
 import { useFinancialData } from '@/contexts/financial-data-context';
 import { generateFinancialTips } from '@/ai/flows/generate-financial-tips';
 import { FinancialTipsInputSchema } from '@/lib/schemas';
@@ -51,7 +52,7 @@ export default function FinancialTipsPage() {
   });
   
   // Update default values if financial data changes
-  useState(() => {
+  useEffect(() => {
     form.reset({
       spendingData: JSON.stringify(defaultSpendingData, null, 2),
       monthlySalary: summary.totalIncome || 0,
