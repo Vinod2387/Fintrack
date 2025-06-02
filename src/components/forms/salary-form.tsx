@@ -16,12 +16,14 @@ import { MONTHS, YEARS, CURRENT_YEAR } from '@/lib/constants';
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 type SalaryFormValues = z.infer<typeof SalarySchema>;
 
 export function SalaryForm() {
   const { addSalary } = useFinancialData();
   const { toast } = useToast();
+  const router = useRouter(); // Initialize useRouter
 
   const form = useForm<SalaryFormValues>({
     resolver: zodResolver(SalarySchema),
@@ -42,6 +44,7 @@ export function SalaryForm() {
       ...values,
       amount: undefined
     });
+    router.push('/expenses'); // Navigate to /expenses
   }
 
   return (
