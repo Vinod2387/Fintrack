@@ -4,7 +4,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -30,7 +30,7 @@ export function BudgetForm() {
       month: MONTHS[new Date().getMonth()],
       year: CURRENT_YEAR,
       category: undefined,
-      amount: undefined,
+      amount: '', // Changed from undefined
     },
   });
   
@@ -44,23 +44,27 @@ export function BudgetForm() {
       const monthYear = `${watchYear}-${String(monthIndex).padStart(2, '0')}`;
       const existingBudget = budgets.find(b => b.monthYear === monthYear && b.category === watchCategory);
       if (existingBudget) {
-        form.setValue("amount", existingBudget.amount);
+        form.setValue("amount", String(existingBudget.amount)); // Ensure it's a string for the input
       } else {
-        form.setValue("amount", undefined); 
+        form.setValue("amount", ''); 
       }
     }
-  }, [watchMonth, watchYear, watchCategory, budgets, form]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchMonth, watchYear, watchCategory, budgets, form.setValue]);
 
 
   function onSubmit(values: BudgetFormValues) {
-    addBudget(values);
+    addBudget({
+        ...values,
+        amount: parseFloat(String(values.amount)) // Ensure amount is number before passing to context
+    });
      toast({
       title: "Budget Set/Updated",
-      description: `Budget for ${values.category} in ${values.month} ${values.year} set to ${formatCurrency(values.amount)}.`,
+      description: `Budget for ${values.category} in ${values.month} ${values.year} set to ${formatCurrency(parseFloat(String(values.amount)))}.`,
     });
     form.reset({ 
-      ...values, 
-      amount: undefined 
+      ...values, // Persist month, year, category for convenience
+      amount: '' // Changed from undefined
     });
   }
 
@@ -155,7 +159,20 @@ export function BudgetForm() {
                 <FormItem>
                   <FormLabel>Budget Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 500" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                    <Input
+                      type="number"
+                      placeholder="e.g., 500"
+                      {...field}
+                      onChange={e => {
+                          const strVal = e.target.value;
+                          if (strVal === "") {
+                            field.onChange(''); 
+                          } else {
+                            field.onChange(strVal); 
+                          }
+                        }}
+                      value={field.value === undefined || field.value === null || Number.isNaN(field.value) ? '' : String(field.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

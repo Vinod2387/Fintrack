@@ -4,7 +4,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -16,21 +16,21 @@ import { MONTHS, YEARS, CURRENT_YEAR } from '@/lib/constants';
 import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation'; 
 
 type SalaryFormValues = z.infer<typeof SalarySchema>;
 
 export function SalaryForm() {
   const { addSalary } = useFinancialData();
   const { toast } = useToast();
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter(); 
 
   const form = useForm<SalaryFormValues>({
     resolver: zodResolver(SalarySchema),
     defaultValues: {
       month: MONTHS[new Date().getMonth()],
       year: CURRENT_YEAR,
-      amount: undefined,
+      amount: '', // Changed from undefined
     },
   });
 
@@ -38,13 +38,13 @@ export function SalaryForm() {
     addSalary(values);
     toast({
       title: "Salary Added",
-      description: `Salary of ${formatCurrency(values.amount)} for ${values.month} ${values.year} has been added.`,
+      description: `Salary of ${formatCurrency(parseFloat(String(values.amount)))} for ${values.month} ${values.year} has been added.`,
     });
     form.reset({
-      ...values,
-      amount: undefined
+      ...values, // Persist month and year for convenience
+      amount: '' // Changed from undefined
     });
-    router.push('/expenses'); // Navigate to /expenses
+    router.push('/expenses'); 
   }
 
   return (
@@ -114,10 +114,22 @@ export function SalaryForm() {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 5000" {...field} onChange={e => {
-                        const value = parseFloat(e.target.value);
-                        field.onChange(isNaN(value) ? undefined : value);
-                      }} />
+                      <Input
+                        type="number"
+                        placeholder="e.g., 5000"
+                        {...field}
+                        onChange={e => {
+                          const strVal = e.target.value;
+                          if (strVal === "") {
+                            field.onChange(''); 
+                          } else {
+                            // RHF expects the actual value type for its state,
+                            // Zod will coerce. We pass string to allow partial numbers.
+                            field.onChange(strVal);
+                          }
+                        }}
+                        value={field.value === undefined || field.value === null || Number.isNaN(field.value) ? '' : String(field.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,7 +33,7 @@ export function ExpenseForm() {
     defaultValues: {
       date: new Date(),
       category: undefined,
-      amount: undefined,
+      amount: '', // Changed from undefined
       description: '',
     },
   });
@@ -40,13 +41,19 @@ export function ExpenseForm() {
   function onSubmit(values: ExpenseFormValues) {
     addExpense({
         ...values,
-        date: values.date.toISOString() 
+        date: values.date.toISOString(),
+        amount: parseFloat(String(values.amount)) // Ensure amount is number before passing to context
     });
     toast({
       title: "Expense Added",
-      description: `${values.category} expense of ${formatCurrency(values.amount)} added.`,
+      description: `${values.category} expense of ${formatCurrency(parseFloat(String(values.amount)))} added.`,
     });
-    form.reset();
+    form.reset({ // Reset with new defaults
+      date: new Date(),
+      category: undefined,
+      amount: '',
+      description: '',
+    });
   }
 
   return (
@@ -132,7 +139,20 @@ export function ExpenseForm() {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 45.50" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                    <Input
+                      type="number"
+                      placeholder="e.g., 45.50"
+                      {...field}
+                      onChange={e => {
+                          const strVal = e.target.value;
+                          if (strVal === "") {
+                            field.onChange(''); 
+                          } else {
+                            field.onChange(strVal); 
+                          }
+                        }}
+                      value={field.value === undefined || field.value === null || Number.isNaN(field.value) ? '' : String(field.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

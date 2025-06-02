@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -28,38 +28,40 @@ export default function FinancialTipsPage() {
   const { toast } = useToast();
 
   const currentMonthYear = getCurrentMonthYear();
-  const summary = getSummaryForMonth(currentMonthYear);
-  const expenses = getExpensesForMonth(currentMonthYear);
-  const budgets = getBudgetsForMonth(currentMonthYear);
-
-  const defaultSpendingData = expenses.reduce((acc, expense) => {
-    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const defaultBudgetGoals = budgets.reduce((acc, budget) => {
-    acc[budget.category] = budget.amount;
-    return acc;
-  }, {} as Record<string, number>);
-
+  
   const form = useForm<FinancialTipsFormValues>({
     resolver: zodResolver(FinancialTipsInputSchema),
+    // Default values will be set by useEffect based on financial data
     defaultValues: {
-      spendingData: JSON.stringify(defaultSpendingData, null, 2),
-      monthlySalary: summary.totalIncome || 0,
-      budgetGoals: JSON.stringify(defaultBudgetGoals, null, 2),
+      spendingData: '{}',
+      monthlySalary: 0, 
+      budgetGoals: '{}',
     },
   });
   
   // Update default values if financial data changes
   useEffect(() => {
+    const summary = getSummaryForMonth(currentMonthYear);
+    const expenses = getExpensesForMonth(currentMonthYear);
+    const budgets = getBudgetsForMonth(currentMonthYear);
+
+    const defaultSpendingData = expenses.reduce((acc, expense) => {
+      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const defaultBudgetGoals = budgets.reduce((acc, budget) => {
+      acc[budget.category] = budget.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
     form.reset({
       spendingData: JSON.stringify(defaultSpendingData, null, 2),
       monthlySalary: summary.totalIncome || 0,
       budgetGoals: JSON.stringify(defaultBudgetGoals, null, 2),
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [summary.totalIncome, expenses, budgets, form.reset]);
+  }, [getSummaryForMonth, getExpensesForMonth, getBudgetsForMonth, currentMonthYear, form.reset]);
 
 
   async function onSubmit(values: FinancialTipsFormValues) {
@@ -69,7 +71,7 @@ export default function FinancialTipsPage() {
     try {
       const result = await generateFinancialTips({
         spendingData: values.spendingData,
-        monthlySalary: Number(values.monthlySalary),
+        monthlySalary: Number(values.monthlySalary), // Ensure it's a number
         budgetGoals: values.budgetGoals,
       });
       setTips(result.financialTips);
@@ -84,7 +86,7 @@ export default function FinancialTipsPage() {
     }
   }
 
-  if (dataIsLoading) {
+  if (dataIsLoading && !form.formState.isDirty) { // Only show main loader if form hasn't been touched
     return (
       <div className="flex justify-center items-center h-full">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -113,7 +115,20 @@ export default function FinancialTipsPage() {
                   <FormItem>
                     <FormLabel>Monthly Salary</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={e => {
+                          const strVal = e.target.value;
+                          if (strVal === "" || strVal === "-") { // Allow negative sign for typing
+                            field.onChange(strVal); 
+                          } else {
+                            const numVal = parseFloat(strVal);
+                            field.onChange(isNaN(numVal) ? '' : numVal);
+                          }
+                        }}
+                        value={field.value === undefined || field.value === null || Number.isNaN(field.value) ? '' : String(field.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
