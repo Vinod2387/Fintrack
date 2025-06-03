@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  fintrack-app:
+    build: .
+    container_name: fintrack-app
+    ports:
+      - "9002:9002"
+    env_file:
+      - .env
+    restart: unless-stopped
